@@ -17,14 +17,15 @@ public class BookedRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "booking_id")
+    private Long bookingId;
 
     @Column(name = "check_in")
     private LocalDate checkInDate;
     @Column(name = "check_out")
     private LocalDate checkOutDate;
 
-    @Column(name = "guest_fullname")
+    @Column(name = "guest_full_name")
     private String guestFullName;
     @Column(name = "guest_email")
     private String guestEmail;
@@ -37,6 +38,7 @@ public class BookedRoom {
 
     @Column(name = "confirmation_code")
     private String bookingConfirmationCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
