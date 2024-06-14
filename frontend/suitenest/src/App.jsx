@@ -6,11 +6,14 @@ import Home from "../src/components/home/Home";
 import AddRoom from "./components/room/AddRoom";
 import ExistingRooms from "./components/room/ExistingRooms";
 import EditRoom from "./components/room/EditRoom";
+import NavBar from "./components/layout/NavBar";
+import Footer from "./components/layout/Footer";
 
 function App() {
   return (
     <main>
       <Router>
+        <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/add-room" element={<AddRoom />} />
@@ -18,6 +21,7 @@ function App() {
           <Route path="/edit-room/:roomId" element={<EditRoom />} />
         </Routes>
       </Router>
+      <Footer />
     </main>
   );
 }
