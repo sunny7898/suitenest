@@ -69,7 +69,12 @@ const BookingSummary = ({ booking, payment, isFormValid, onConfirm }) => {
               <Button variant="success" onClick={handleConfirmBooking}>
                 {isProcessingPayment ? (
                   <>
-                    <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Booking Confirmed, redirecting to payment...
+                    <span
+                      className="spinner-border spinner-border-sm mr-2"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Booking Confirmed, redirecting to payment...
                   </>
                 ) : (
                   "Confirm Booking & proceed to payment"
