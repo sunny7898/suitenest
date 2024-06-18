@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
-import { Form, FormControl, FormLabel } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
+import { Form, FormControl, Button, FormLabel } from "react-bootstrap";
+
 import { bookRoom, getRoomById } from "../utils/ApiFunctions";
 import BookingSummary from "./BookingSummary";
 
@@ -29,7 +30,7 @@ const BookingForm = () => {
     setErrorMessage("");
   };
 
-  const getRoomPriceByRoomId = async roomId => {
+  const getRoomPriceById = async roomId => {
     try {
       const response = await getRoomById(roomId);
       setRoomPrice(response.roomPrice);
@@ -39,14 +40,15 @@ const BookingForm = () => {
   };
 
   useEffect(() => {
-    getRoomPriceByRoomId(roomId);
+    getRoomPriceById(roomId);
   }, [roomId]);
 
   const calculatePayment = () => {
     const checkInDate = moment(booking.checkInDate);
     const checkOutDate = moment(booking.checkOutDate);
-    const numberOfDays = checkOutDate.diff(checkInDate, "days");
-    return numberOfDays * roomPrice;
+    const diffInDays = checkOutDate.diff(checkInDate, "days");
+    const paymentPerDay = roomPrice ? roomPrice : 0;
+    return diffInDays * paymentPerDay;
   };
 
   const isGuestCountValid = () => {
@@ -69,22 +71,22 @@ const BookingForm = () => {
   const handleSubmit = e => {
     e.preventDefault();
     const form = e.currentTarget;
-    if (form.checkValidity === false || !isGuestCountValid || !isCheckOutDateValid) {
+    if (form.checkValidity() === false || !isGuestCountValid || !isCheckOutDateValid) {
       e.stopPropagation();
     } else {
       setIsSubmitted(true);
-      setValidated(true);
     }
+    setValidated(true);
   };
 
   const handleFormSubmit = async () => {
     try {
       const confirmationCode = await bookRoom(roomId, booking);
       setIsSubmitted(true);
-      navigate("/", { state: { message: confirmationCode } });
+      navigate("/booking-success", { state: { message: confirmationCode } });
     } catch (err) {
-      setErrorMessage(err.message);
-      navigate("/", { state: { error: errorMessage } });
+      const errorMessage = err.message;
+      navigate("/booking-success", { state: { error: errorMessage } });
     }
   };
 
@@ -95,11 +97,12 @@ const BookingForm = () => {
           <div className="col-md-6">
             <div className="card card-body mt-5">
               <h4 className="card-title">Reserve Room</h4>
+
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Group>
-                  <FormLabel htmlFor="guestFullName" className="hotel-color">
+                  <Form.Label htmlFor="guestFullName" className="hotel-color">
                     Full Name
-                  </FormLabel>
+                  </Form.Label>
                   <Form.Control
                     required
                     type="text"
@@ -115,9 +118,9 @@ const BookingForm = () => {
                 </Form.Group>
 
                 <Form.Group>
-                  <FormLabel htmlFor="guestEmail" className="hotel-color">
+                  <Form.Label htmlFor="guestEmail" className="hotel-color">
                     Email
-                  </FormLabel>
+                  </Form.Label>
                   <Form.Control
                     required
                     type="email"
@@ -133,10 +136,12 @@ const BookingForm = () => {
                 </Form.Group>
 
                 <fieldset style={{ border: "2px" }}>
-                  <legend>Lodging period</legend>
+                  <legend>Lodging Period</legend>
                   <div className="row">
                     <div className="col-6">
-                      <FormLabel htmlFor="checkInDate">Check-in date</FormLabel>
+                      <Form.Label htmlFor="checkInDate" className="hotel-color">
+                        Check-in date
+                      </Form.Label>
                       <Form.Control
                         required
                         type="date"
@@ -179,7 +184,9 @@ const BookingForm = () => {
                   <legend>Number of Guests</legend>
                   <div className="row">
                     <div className="col-6">
-                      <FormLabel htmlFor="numberOfAdults">Adults</FormLabel>
+                      <Form.Label htmlFor="numberOfAdults" className="hotel-color">
+                        Adults
+                      </Form.Label>
                       <Form.Control
                         required
                         type="number"
@@ -196,7 +203,9 @@ const BookingForm = () => {
                     </div>
 
                     <div className="col-6">
-                      <FormLabel htmlFor="numberOfChildren">Children :</FormLabel>
+                      <Form.Label htmlFor="numberOfChildren" className="hotel-color">
+                        Children
+                      </Form.Label>
                       <Form.Control
                         required
                         type="number"
@@ -223,13 +232,13 @@ const BookingForm = () => {
             </div>
           </div>
 
-          <div className="col-mt-6">
+          <div className="col-md-4">
             {isSubmitted && (
               <BookingSummary
                 booking={booking}
-                isFormValid={validated}
-                onChange={handleFormSubmit}
                 payment={calculatePayment()}
+                isFormValid={validated}
+                onConfirm={handleFormSubmit}
               />
             )}
           </div>
