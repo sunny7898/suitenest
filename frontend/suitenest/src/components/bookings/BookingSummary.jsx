@@ -30,7 +30,6 @@ const BookingSummary = ({ booking, payment, isFormValid, onConfirm }) => {
 
   return (
     <div className="row">
-      <div className="col-md-6"></div>
       <div className="card card-body mt-5">
         <h4 className="card-title hotel-color">Reservation Summary</h4>
         <p>
