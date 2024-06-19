@@ -136,7 +136,9 @@ const BookingForm = () => {
                 </Form.Group>
 
                 <fieldset style={{ border: "2px" }}>
-                  <legend>Lodging Period</legend>
+                  <legend style={{ fontSize: "1.5rem", marginTop: "5px", marginBottom: "10px" }}>
+                    Lodging Period
+                  </legend>
                   <div className="row">
                     <div className="col-6">
                       <Form.Label htmlFor="checkInDate" className="hotel-color">
@@ -232,7 +234,7 @@ const BookingForm = () => {
             </div>
           </div>
 
-          <div className="col-md-4">
+          <div className="col-md-5">
             {isSubmitted && (
               <BookingSummary
                 booking={booking}
