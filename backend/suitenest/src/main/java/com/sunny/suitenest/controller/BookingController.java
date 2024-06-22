@@ -8,6 +8,7 @@ import com.sunny.suitenest.response.BookingResponse;
 import com.sunny.suitenest.response.RoomResponse;
 import com.sunny.suitenest.service.impl.BookingServiceImpl;
 import com.sunny.suitenest.service.impl.RoomServiceImpl;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class BookingController {
             BookedRoom booking = bookingService.findByBookingConfirmationCode(confirmationCode);
             BookingResponse bookingResponse = getBookingResponse(booking);
             return ResponseEntity.ok(bookingResponse);
-        } catch (ResourceNotFoundException e) {
+        } catch (NullPointerException | ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

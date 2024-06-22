@@ -16,8 +16,8 @@ const BookingForm = () => {
     guestEmail: "",
     checkInDate: "",
     checkOutDate: "",
-    numberOfAdults: "",
-    numberOfChildren: "",
+    numOfAdults: "",
+    numOfChildren: "",
   });
   const [roomInfo, setRoomInfo] = useState({ photo: "", roomType: "", roomPrice: "" });
 
@@ -186,17 +186,17 @@ const BookingForm = () => {
                   <legend>Number of Guests</legend>
                   <div className="row">
                     <div className="col-6">
-                      <Form.Label htmlFor="numberOfAdults" className="hotel-color">
+                      <Form.Label htmlFor="numOfAdults" className="hotel-color">
                         Adults
                       </Form.Label>
                       <Form.Control
                         required
                         type="number"
-                        id="numberOfAdults"
-                        name="numberOfAdults"
+                        id="numOfAdults"
+                        name="numOfAdults"
                         min={1}
                         placeholder="0"
-                        value={booking.numberOfAdults}
+                        value={booking.numOfAdults}
                         onChange={handleInputChange}
                       />
                       <Form.Control.Feedback type="invalid">
@@ -205,17 +205,17 @@ const BookingForm = () => {
                     </div>
 
                     <div className="col-6">
-                      <Form.Label htmlFor="numberOfChildren" className="hotel-color">
+                      <Form.Label htmlFor="numOfChildren" className="hotel-color">
                         Children
                       </Form.Label>
                       <Form.Control
                         required
                         type="number"
-                        id="numberOfChildren"
-                        name="numberOfChildren"
+                        id="numOfChildren"
+                        name="numOfChildren"
                         placeholder="0"
                         min={0}
-                        value={booking.numberOfChildren}
+                        value={booking.numOfChildren}
                         onChange={handleInputChange}
                       />
                       <Form.Control.Feedback type="invalid">

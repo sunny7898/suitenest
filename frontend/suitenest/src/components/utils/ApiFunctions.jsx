@@ -99,9 +99,10 @@ export async function getBookingByConfirmationCode(confirmationCode) {
     return response.data;
   } catch (err) {
     if (err.response && err.response.data) {
+      console.log(err.response);
       throw new Error(err.response.data);
     } else {
-      throw new Error(`Error fetching room with the given confirmation code: ${err.message}`);
+      throw new Error(`Error finding booking : ${err.message}`);
     }
   }
 }
