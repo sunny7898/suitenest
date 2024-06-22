@@ -1,6 +1,7 @@
 package com.sunny.suitenest.service.impl;
 
 import com.sunny.suitenest.exception.InvalidBookingRequestException;
+import com.sunny.suitenest.exception.ResourceNotFoundException;
 import com.sunny.suitenest.model.BookedRoom;
 import com.sunny.suitenest.model.Room;
 import com.sunny.suitenest.repository.BookingRepository;
@@ -29,7 +30,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookedRoom findByBookingConfirmationCode(String confirmationCode) {
-        return bookingRepository.findByBookingConfirmationCode(confirmationCode);
+        return bookingRepository.findByBookingConfirmationCode(confirmationCode)
+                .orElseThrow(() -> new ResourceNotFoundException("No booking found with booking code: "+confirmationCode));
     }
 
     @Override
