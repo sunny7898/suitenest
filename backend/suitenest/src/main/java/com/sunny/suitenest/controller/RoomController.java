@@ -11,6 +11,9 @@ import com.sunny.suitenest.service.impl.BookingServiceImpl;
 import com.sunny.suitenest.service.impl.RoomServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -22,18 +25,22 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin("http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/rooms")
 public class RoomController {
 
     private final RoomServiceImpl roomService;
     private final BookingServiceImpl bookingService;
+
+    private static final Logger logger = LoggerFactory.getLogger(RoomController.class);
 
     @PostMapping("/add/new-room")
     public ResponseEntity<RoomResponse> addNewRoom(@RequestParam("photo") MultipartFile photo,
@@ -94,7 +101,7 @@ public class RoomController {
         return ResponseEntity.ok(roomResponse);
     }
 
-    @GetMapping("room/{roomId}")
+    @GetMapping("/room/{roomId}")
     public ResponseEntity<Optional<RoomResponse>> getRoomById(@PathVariable Long roomId) {
         Optional<Room> theRoom = roomService.getRoomById(roomId);
         return theRoom.map(room -> {
@@ -102,6 +109,43 @@ public class RoomController {
             return ResponseEntity.ok(Optional.of(roomResponse));
         }).orElseThrow(() -> new ResourceNotFoundException("Room not found!"));
     }
+
+    @GetMapping("/available-rooms")
+    public ResponseEntity<List<RoomResponse>> getAvailableRooms(
+            @RequestParam("checkInDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+            @RequestParam("checkOutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam("roomType") String roomType) throws SQLException {
+
+        if (checkInDate == null || checkOutDate == null) {
+            logger.warn("Check-in and check-out dates cannot be null.");
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (!checkOutDate.isAfter(checkInDate)) {
+            logger.warn("Check-out date must be after check-in date.");
+            return ResponseEntity.badRequest().build();
+        }
+
+        logger.info("CHECK IN DATE: {}", checkInDate);
+
+        List<Room> availableRooms = roomService.getAvailableRooms(checkInDate, checkOutDate, roomType);
+        List<RoomResponse> roomResponses = new ArrayList<>();
+
+        for (Room room : availableRooms) {
+            byte[] photoBytes = roomService.getRoomPhotoByRoomId(room.getId());
+            String photoBase64 = (photoBytes != null && photoBytes.length > 0)
+                    ? Base64.encodeBase64String(photoBytes)
+                    : null;
+            RoomResponse roomResponse = getRoomResponse(room);
+            roomResponse.setPhoto(photoBase64);
+            roomResponses.add(roomResponse);
+        }
+        if (roomResponses.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(roomResponses);
+    }
+
 
     private RoomResponse getRoomResponse(Room room) {
         List<BookedRoom> bookings = getAllBookingsByRoomId(room.getId());
