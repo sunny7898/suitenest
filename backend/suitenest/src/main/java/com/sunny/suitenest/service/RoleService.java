@@ -6,7 +6,7 @@ import com.sunny.suitenest.model.User;
 import java.util.List;
 
 public interface RoleService {
-    List<Role> getRoles();
+    List<Role> getAllRoles();
 
     Role createRole(Role role);
 

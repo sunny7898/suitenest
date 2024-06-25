@@ -1,5 +1,6 @@
 package com.sunny.suitenest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,9 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private Collection<User> users = new HashSet<>();
 
@@ -35,7 +36,7 @@ public class Role {
 
     public void removeUserFromRole(User user) {
         user.getRoles().remove(this);
-        this.getUsers().remove((user));
+        this.getUsers().remove(user);
     }
 
     public void removeAllUsersFromRole() {
