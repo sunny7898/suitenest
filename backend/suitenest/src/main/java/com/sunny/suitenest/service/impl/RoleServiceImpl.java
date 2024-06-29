@@ -64,7 +64,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public User assignRoleToUser(Long userId, Long roleId) {
+    public User assignUserToRole(Long userId, Long roleId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Role> role = roleRepository.findById(roleId);
 

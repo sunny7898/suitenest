@@ -16,7 +16,7 @@ public interface RoleService {
 
     User removeUserFromRole(Long userId, Long roleId);
 
-    User assignRoleToUser(Long userId, Long roleId);
+    User assignUserToRole(Long userId, Long roleId);
 
     Role removeAllUsersFromRole(Long roleId);
 

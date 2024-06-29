@@ -47,14 +47,14 @@ public class RoleController {
         return roleService.removeAllUsersFromRole(roleId);
     }
 
-    @PostMapping("/remove-user-from-role/?userId={userId}&&roleId={roleId}")
+    @PostMapping("/remove-user-from-role")
     public User removeUser(@RequestParam("userId") Long userId, @RequestParam("roleId") Long roleId){
         return roleService.removeUserFromRole(userId, roleId);
     }
 
-    @PostMapping("/assign-role-to-user/?userId={userId}&&roleId={roleId}")
-    public User assignRoleToUser(@RequestParam("userId") Long userId, @RequestParam("roleId") Long roleId){
-        return roleService.assignRoleToUser(userId, roleId);
+    @PostMapping("/assign-role-to-user")
+    public User assignUserToRole(@RequestParam("userId") Long userId, @RequestParam("roleId") Long roleId){
+        return roleService.assignUserToRole(userId, roleId);
     }
 
 }

@@ -10,6 +10,7 @@ public interface BookingService {
 
     public BookedRoom findByBookingConfirmationCode(String confirmationCode) ;
 
+    List<BookedRoom> getBookingsByUserEmail(String email);
     public String saveBooking(Long roomId, BookedRoom bookingRequest);
 
     public void cancelBooking(Long bookingId) ;
