@@ -30,9 +30,7 @@ public class JwtUtils {
 
     public String generateJwtTokenForUser(Authentication authentication){
         HotelUserDetails userPrincipal = (HotelUserDetails) authentication.getPrincipal();
-        List<String> roles = userPrincipal.getAuthorities().stream().map(
-                GrantedAuthority::getAuthority
-        ).toList();
+        List<String> roles = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
         return Jwts.builder().setSubject(userPrincipal.getUsername())
                 .claim("roles", roles)

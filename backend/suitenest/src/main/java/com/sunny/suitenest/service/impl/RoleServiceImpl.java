@@ -7,12 +7,10 @@ import com.sunny.suitenest.model.User;
 import com.sunny.suitenest.repository.RoleRepository;
 import com.sunny.suitenest.repository.UserRepository;
 import com.sunny.suitenest.service.RoleService;
-import com.sunny.suitenest.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 

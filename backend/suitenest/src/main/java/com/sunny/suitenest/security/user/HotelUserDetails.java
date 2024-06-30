@@ -26,7 +26,9 @@ public class HotelUserDetails implements UserDetails {
 
     public static HotelUserDetails buildUserDetails(User user) {
         List<GrantedAuthority> authorities = user.getRoles()
-                .stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
 
         return new HotelUserDetails(user.getId(), user.getEmail(), user.getPassword(), authorities);
     }
