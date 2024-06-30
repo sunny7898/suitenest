@@ -12,9 +12,7 @@ const ExistingRooms = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [roomsPerPage, setRoomPerPage] = useState(8);
   const [isLoading, setIsLoading] = useState(false);
-  const [filteredRooms, setFilteredRooms] = useState([
-    { id: "", roomType: "", roomPrice: "" },
-  ]);
+  const [filteredRooms, setFilteredRooms] = useState([{ id: "", roomType: "", roomPrice: "" }]);
   const [selectedRoomType, setSelectedRoomType] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -39,25 +37,22 @@ const ExistingRooms = () => {
     if (selectedRoomType === "") {
       setFilteredRooms(rooms);
     } else {
-      const filteredRooms = rooms.filter(
-        (room) => room.roomType === selectedRoomType
-      );
+      const filteredRooms = rooms.filter(room => room.roomType === selectedRoomType);
       setFilteredRooms(filteredRooms);
     }
     setCurrentPage(1);
   }, [rooms, selectedRoomType]);
 
-  const handlePaginationClick = (pageNumber) => {
+  const handlePaginationClick = pageNumber => {
     setCurrentPage(pageNumber);
   };
 
   const calculateTotalPages = (filteredRooms, roomsPerPage, rooms) => {
-    const totalRooms =
-      filteredRooms.length > 0 ? filteredRooms.length : rooms.length;
+    const totalRooms = filteredRooms.length > 0 ? filteredRooms.length : rooms.length;
     return Math.ceil(totalRooms / roomsPerPage);
   };
 
-  const handleDelete = async (roomId) => {
+  const handleDelete = async roomId => {
     try {
       const response = await deleteRoom(roomId);
       if (response === "") {
@@ -82,13 +77,8 @@ const ExistingRooms = () => {
   return (
     <>
       <div className="container col-md-8 col-lg-6">
-        {successMessage && (
-          <p className="alert alert-success mt-5">{successMessage}</p>
-        )}
-
-        {errorMessage && (
-          <p className="alert alert-danger mt-5">{errorMessage}</p>
-        )}
+        {successMessage && <p className="alert alert-success mt-5">{successMessage}</p>}
+        {errorMessage && <p className="alert alert-danger mt-5">{errorMessage}</p>}
       </div>
 
       {isLoading ? (
@@ -122,7 +112,7 @@ const ExistingRooms = () => {
               </thead>
 
               <tbody>
-                {currentRooms.map((room) => (
+                {currentRooms.map(room => (
                   <tr key={room.id} className="text-center">
                     <td>{room.id}</td>
                     <td>{room.roomType}</td>
@@ -149,11 +139,7 @@ const ExistingRooms = () => {
             </table>
             <RoomPaginator
               currentPage={currentPage}
-              totalPages={calculateTotalPages(
-                filteredRooms,
-                roomsPerPage,
-                rooms
-              )}
+              totalPages={calculateTotalPages(filteredRooms, roomsPerPage, rooms)}
               onPageChange={handlePaginationClick}
             />
           </section>

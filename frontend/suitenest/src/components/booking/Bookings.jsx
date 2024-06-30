@@ -12,8 +12,8 @@ const Bookings = () => {
   useEffect(() => {
     setTimeout(() => {
       getAllBookings()
-        .then(response => {
-          setBookingsInfo(response);
+        .then(data => {
+          setBookingsInfo(data);
           setIsLoading(false);
         })
         .catch(err => {

@@ -3,11 +3,13 @@ import axios from "axios";
 export const api = axios.create({
   baseURL: "http://localhost:9192",
 });
+
 export const getHeader = () => {
   const token = localStorage.getItem("token");
   return {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
+    // "Content-Type": "multipart/form-data",
   };
 };
 
@@ -18,7 +20,10 @@ export async function addRoom(photo, roomType, roomPrice) {
   formData.append("roomType", roomType);
   formData.append("roomPrice", roomPrice);
 
-  const response = await api.post("/rooms/add/new-room", formData);
+  const response = await api.post("/rooms/add/new-room", formData, {
+    headers: getHeader(),
+  });
+
   if (response.status === 201) {
     return true;
   }
@@ -48,7 +53,9 @@ export async function getAllRooms() {
 /* This function deletes room by roomId from the database */
 export async function deleteRoom(roomId) {
   try {
-    const response = await api.delete(`/rooms/delete/room/${roomId}`);
+    const response = await api.delete(`/rooms/delete/room/${roomId}`, {
+      headers: getHeader(),
+    });
     return response.data;
   } catch (err) {
     throw new Error(`Error deleting room. Error: ${err.message}`);
@@ -61,7 +68,9 @@ export async function updateRoom(roomId, roomData) {
   formData.append("roomType", roomData.roomType);
   formData.append("roomPrice", roomData.roomPrice);
   formData.append("photo", roomData.photo);
-  const response = await api.put(`/rooms/update/${roomId}`, formData);
+  const response = await api.put(`/rooms/update/${roomId}`, formData, {
+    headers: getHeader,
+  });
   return response;
 }
 
@@ -92,7 +101,9 @@ export async function bookRoom(roomId, booking) {
 /* This function is fetch all bookings from the database */
 export async function getAllBookings() {
   try {
-    const response = await api.get("/bookings/all-bookings");
+    const response = await api.get("/bookings/all-bookings", {
+      headers: getHeader(),
+    });
     return response.data;
   } catch (err) {
     throw new Error(`Error fetching bookings: ${err.message}`);
@@ -127,10 +138,11 @@ export async function cancelBooking(bookingId) {
 /* This function retrieves available room types between the checkin and checkout date */
 export async function getAvailableRooms(checkInDate, checkOutDate, roomType) {
   const result = await api.get(
-    `/rooms/available-rooms/?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&roomType=${roomType}`
+    `/rooms/available-rooms?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&roomType=${roomType}`
   );
   return result;
 }
+
 /* This function register a new user */
 export async function registerUser(registration) {
   try {

@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { registerUser } from "../utils/ApiFunctions";
+import { Link } from "react-router-dom";
 
 const Registration = () => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [registration, setRegistration] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleInputChange = e => {
     setRegistration({ ...registration, [e.target.name]: e.target.value });
@@ -53,7 +54,6 @@ const Registration = () => {
               className="form-control"
               value={registration.firstName}
               onChange={handleInputChange}
-              placeholder="Enter first name"
             />
           </div>
         </div>
@@ -70,7 +70,6 @@ const Registration = () => {
               className="form-control"
               value={registration.lastName}
               onChange={handleInputChange}
-              placeholder="Enter last name"
             />
           </div>
         </div>
@@ -85,9 +84,8 @@ const Registration = () => {
               name="email"
               type="email"
               className="form-control"
-              value={login.email}
+              value={registration.email}
               onChange={handleInputChange}
-              placeholder="Enter your email"
             />
           </div>
         </div>
@@ -102,9 +100,8 @@ const Registration = () => {
               name="password"
               type="password"
               className="form-control"
-              value={login.password}
+              value={registration.password}
               onChange={handleInputChange}
-              placeholder="Enter password"
             />
           </div>
         </div>

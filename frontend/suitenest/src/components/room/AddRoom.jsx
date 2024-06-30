@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+
 import { addRoom } from "../utils/ApiFunctions";
 import RoomTypeSelector from "../common/RoomTypeSelector";
 
@@ -12,7 +14,7 @@ function AddRoom() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleRoomInputChange = (e) => {
+  const handleRoomInputChange = e => {
     const name = e.target.name;
     let value = e.target.value;
 
@@ -26,34 +28,23 @@ function AddRoom() {
     setNewRoom({ ...newRoom, [name]: value });
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = e => {
     const selectedImage = e.target.files[0];
-    setNewRoom({
-      ...newRoom,
-      photo: selectedImage,
-    });
+    setNewRoom({ ...newRoom, photo: selectedImage });
     setImagePreview(URL.createObjectURL(selectedImage));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const success = await addRoom(
-        newRoom.photo,
-        newRoom.roomType,
-        newRoom.roomPrice
-      );
+      const success = await addRoom(newRoom.photo, newRoom.roomType, newRoom.roomPrice);
       if (success !== undefined) {
-        setSuccessMessage("A new room was added to the database!");
-        setNewRoom({
-          photo: null,
-          roomType: "",
-          roomPrice: "",
-        });
+        setSuccessMessage("A new room was added successfully!");
+        setNewRoom({ photo: null, roomType: "", roomPrice: "" });
         setImagePreview("");
         setErrorMessage("");
       } else {
-        setErrorMessage("Error adding new room to the database!");
+        setErrorMessage("Error adding new room!");
       }
     } catch (error) {
       setErrorMessage(error.message);
@@ -72,14 +63,10 @@ function AddRoom() {
             <h2 className="mt-5 mb-2">Add New Room</h2>
 
             {successMessage && (
-              <div className="alert alert-success fade show">
-                {successMessage}
-              </div>
+              <div className="alert alert-success fade show">{successMessage}</div>
             )}
 
-            {errorMessage && (
-              <div className="alert alert-danger fade show">{errorMessage}</div>
-            )}
+            {errorMessage && <div className="alert alert-danger fade show">{errorMessage}</div>}
 
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
@@ -99,13 +86,13 @@ function AddRoom() {
                   Room Price
                 </label>
                 <input
-                  id="roomPrice"
-                  name="roomPrice"
+                  required
                   type="number"
+                  id="roomPrice"
                   className="form-control"
+                  name="roomPrice"
                   value={newRoom.roomPrice}
                   onChange={handleRoomInputChange}
-                  required
                 />
               </div>
 
@@ -114,6 +101,7 @@ function AddRoom() {
                   Room Photo
                 </label>
                 <input
+                  required
                   id="photo"
                   name="photo"
                   type="file"
@@ -131,6 +119,9 @@ function AddRoom() {
               </div>
 
               <div className="d-grid d-md-flex mt-2">
+                <Link to={"/existing-rooms"} className="btn btn-outline-info">
+                  Existing rooms
+                </Link>
                 <button
                   className={
                     newRoom.roomType !== ""

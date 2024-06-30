@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-
-import { getAllRooms } from "../utils/ApiFunctions";
 import { Col, Container, Row } from "react-bootstrap";
 
 import RoomCard from "./RoomCard";
 import RoomFilter from "../common/RoomFilter.jsx";
+import { getAllRooms } from "../utils/ApiFunctions";
 import RoomPaginator from "../common/RoomPaginator.jsx";
 
 const Room = () => {
@@ -13,21 +12,17 @@ const Room = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [roomsPerPage, setRoomsPerPage] = useState(6);
-  const [filteredData, setFilteredData] = useState([
-    {
-      id: "",
-    },
-  ]);
+  const [filteredData, setFilteredData] = useState([{ id: "" }]);
 
   useEffect(() => {
     setIsLoading(true);
     getAllRooms()
-      .then((data) => {
+      .then(data => {
         setData(data);
         setFilteredData(data);
         setIsLoading(false);
       })
-      .catch((error) => {
+      .catch(error => {
         setError(error.message);
         setIsLoading(false);
       });
@@ -41,7 +36,7 @@ const Room = () => {
     return <div className="text-danger">Error : {error}</div>;
   }
 
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = pageNumber => {
     setCurrentPage(pageNumber);
   };
 
@@ -52,36 +47,36 @@ const Room = () => {
     const endIndex = startIndex + roomsPerPage;
     return filteredData
       .slice(startIndex, endIndex)
-      .map((room) => <RoomCard key={room.id} room={room} />);
+      .map(room => <RoomCard key={room.id} room={room} />);
   };
 
   return (
-    <>
-      <Container>
-        <Row>
-          <Col md={6} className="mb-3 mb-md-0">
-            <RoomFilter data={data} setFilteredData={setFilteredData} />
-          </Col>
-          <Col md={6} className="d-flex align-items-center justify-content-end">
-            <RoomPaginator
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </Col>
-        </Row>
-        <Row>{renderRooms()}</Row>
-        <Row>
-          <Col md={6} className="d-flex align-items-center justify-content-end">
-            <RoomPaginator
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </Col>
-        </Row>
-      </Container>
-    </>
+    <Container>
+      <Row>
+        <Col md={6} className="mb-3 mb-md-0">
+          <RoomFilter data={data} setFilteredData={setFilteredData} />
+        </Col>
+        <Col md={6} className="d-flex align-items-center justify-content-end">
+          <RoomPaginator
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </Col>
+      </Row>
+
+      <Row>{renderRooms()}</Row>
+
+      <Row>
+        <Col md={6} className="d-flex align-items-center justify-content-end">
+          <RoomPaginator
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getRoomById } from "../utils/ApiFunctions";
 import { useParams } from "react-router";
 import { FaTshirt, FaWifi, FaTv, FaUtensils, FaWineGlass, FaParking, FaCar } from "react-icons/fa";
 
+import { getRoomById } from "../utils/ApiFunctions";
 import BookingForm from "./BookingForm";
 import RoomCarousel from "../common/RoomCarousel";
 
@@ -29,7 +29,7 @@ const Checkout = () => {
           setError(err);
           setIsLoading(false);
         });
-    }, 2000);
+    }, 1000);
   }, [roomId]);
 
   return (
@@ -40,7 +40,7 @@ const Checkout = () => {
             {isLoading ? (
               <p>Loading room information..</p>
             ) : error ? (
-              <p>{error.message}</p>
+              <p>{error}</p>
             ) : (
               <div className="room-info">
                 <img

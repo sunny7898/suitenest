@@ -189,7 +189,7 @@ const Profile = () => {
               <div className="d-flex justify-content-center">
                 <div className="mx-2">
                   <button className="btn btn-danger btn-sm" onClick={handleDeleteAccount}>
-                    Close account
+                    Delete account
                   </button>
                 </div>
               </div>
