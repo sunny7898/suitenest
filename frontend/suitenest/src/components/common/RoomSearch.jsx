@@ -74,7 +74,7 @@ const RoomSearch = () => {
                   name="checkInDate"
                   value={searchQuery.checkInDate}
                   onChange={handleInputChange}
-                  min={moment().format("yyyy-MM-dd")}
+                  min={moment().format("YYYY-MM-DD")}
                 />
               </Form.Group>
             </Col>
@@ -87,7 +87,7 @@ const RoomSearch = () => {
                   name="checkOutDate"
                   value={searchQuery.checkOutDate}
                   onChange={handleInputChange}
-                  min={moment().format("yyyy-MM-dd")}
+                  min={moment().format("YYYY-MM-DD")}
                 />
               </Form.Group>
             </Col>

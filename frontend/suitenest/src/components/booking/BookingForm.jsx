@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
-import { Form, FormControl, Button, FormLabel } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 import { bookRoom, getRoomById } from "../utils/ApiFunctions";
 import BookingSummary from "./BookingSummary";
@@ -11,15 +11,16 @@ const BookingForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [roomPrice, setRoomPrice] = useState(0);
+
+  const currentUser = localStorage.getItem("userId");
   const [booking, setBooking] = useState({
     guestFullName: "",
-    guestEmail: "",
+    guestEmail: currentUser,
     checkInDate: "",
     checkOutDate: "",
     numOfAdults: "",
     numOfChildren: "",
   });
-  const [roomInfo, setRoomInfo] = useState({ photo: "", roomType: "", roomPrice: "" });
 
   const { roomId } = useParams();
   const navigate = useNavigate();
@@ -39,10 +40,6 @@ const BookingForm = () => {
     }
   };
 
-  useEffect(() => {
-    getRoomPriceById(roomId);
-  }, [roomId]);
-
   const calculatePayment = () => {
     const checkInDate = moment(booking.checkInDate);
     const checkOutDate = moment(booking.checkOutDate);
@@ -52,8 +49,8 @@ const BookingForm = () => {
   };
 
   const isGuestCountValid = () => {
-    const adultCount = parseInt(booking.numberOfAdults);
-    const childrenCount = parseInt(booking.numberOfChildren);
+    const adultCount = parseInt(booking.numOfAdults);
+    const childrenCount = parseInt(booking.numOfChildren);
     const totalCount = adultCount + childrenCount;
     return totalCount >= 1 && adultCount >= 1;
   };
@@ -86,9 +83,14 @@ const BookingForm = () => {
       navigate("/booking-success", { state: { message: confirmationCode } });
     } catch (err) {
       const errorMessage = err.message;
+      console.log(errorMessage);
       navigate("/booking-success", { state: { error: errorMessage } });
     }
   };
+
+  useEffect(() => {
+    getRoomPriceById(roomId);
+  }, [roomId]);
 
   return (
     <>
@@ -129,6 +131,7 @@ const BookingForm = () => {
                     value={booking.guestEmail}
                     placeholder="Enter your email"
                     onChange={handleInputChange}
+                    disabled
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter a valid email address.
@@ -151,7 +154,7 @@ const BookingForm = () => {
                         name="checkInDate"
                         value={booking.checkInDate}
                         placeholder="check-in-date"
-                        min={moment().format("MMM Do, YYYY")}
+                        min={moment().format("YYYY-MM-DD")}
                         onChange={handleInputChange}
                       />
                       <Form.Control.Feedback type="invalid">
@@ -170,7 +173,9 @@ const BookingForm = () => {
                         name="checkOutDate"
                         value={booking.checkOutDate}
                         placeholder="check-out-date"
-                        min={moment().format("MMM Do, YYYY")}
+                        min={
+                          booking.checkInDate ? booking.checkInDate : moment().format("YYYY-MM-DD")
+                        }
                         onChange={handleInputChange}
                       />
                       <Form.Control.Feedback type="invalid">

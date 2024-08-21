@@ -3,11 +3,11 @@ import React, { useState } from "react";
 const RoomFilter = ({ data, setFilteredData }) => {
   const [filter, setFilter] = useState("");
 
-  const handleSelectChange = (e) => {
+  const handleSelectChange = e => {
     const selectedRoomType = e.target.value;
     setFilter(selectedRoomType);
 
-    const filteredRooms = data.filter((room) =>
+    const filteredRooms = data.filter(room =>
       room.roomType.toLowerCase().includes(selectedRoomType.toLowerCase())
     );
     setFilteredData(filteredRooms);
@@ -18,7 +18,7 @@ const RoomFilter = ({ data, setFilteredData }) => {
     setFilteredData(data);
   };
 
-  const roomTypes = ["", ...new Set(data.map((room) => room.roomType))];
+  const roomTypes = ["", ...new Set(data.map(room => room.roomType))];
   return (
     <div className="input-group mb-3">
       <span className="input-group-text" id="room-type-filter">
@@ -26,6 +26,7 @@ const RoomFilter = ({ data, setFilteredData }) => {
       </span>
       <select
         className="form-select"
+        aria-label="romm type filter"
         value={filter}
         onChange={handleSelectChange}
       >

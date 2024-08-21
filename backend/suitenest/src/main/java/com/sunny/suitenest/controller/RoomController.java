@@ -1,7 +1,7 @@
 package com.sunny.suitenest.controller;
 
 import com.sunny.suitenest.exception.InternalServerException;
-import com.sunny.suitenest.exception.PhotoRetreiverException;
+import com.sunny.suitenest.exception.PhotoRetreivalException;
 import com.sunny.suitenest.exception.ResourceNotFoundException;
 import com.sunny.suitenest.model.BookedRoom;
 import com.sunny.suitenest.model.Room;
@@ -11,12 +11,10 @@ import com.sunny.suitenest.service.impl.BookingServiceImpl;
 import com.sunny.suitenest.service.impl.RoomServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,23 +24,20 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/rooms")
 public class RoomController {
 
     private final RoomServiceImpl roomService;
     private final BookingServiceImpl bookingService;
 
-    private static final Logger logger = LoggerFactory.getLogger(RoomController.class);
-
     @PostMapping("/add/new-room")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<RoomResponse> addNewRoom(@RequestParam("photo") MultipartFile photo,
                                                    @RequestParam("roomType") String roomType,
                                                    @RequestParam("roomPrice") BigDecimal roomPrice) throws SQLException, IOException {
@@ -75,18 +70,20 @@ public class RoomController {
     }
 
     @DeleteMapping("/delete/room/{roomId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId) {
         roomService.deleteRoom(roomId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/update/{roomId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId,
                                                    @RequestParam(required = false) String roomType,
                                                    @RequestParam(required = false) BigDecimal roomPrice,
                                                    @RequestParam(required = false) MultipartFile photo) throws SQLException, IOException, InternalServerException {
-        byte[] photoBytes = photo != null
-                && !photo.isEmpty()
+
+        byte[] photoBytes = photo != null && !photo.isEmpty()
                 ? photo.getBytes()
                 : roomService.getRoomPhotoByRoomId(roomId);
 
@@ -116,18 +113,6 @@ public class RoomController {
             @RequestParam("checkOutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
             @RequestParam("roomType") String roomType) throws SQLException {
 
-        if (checkInDate == null || checkOutDate == null) {
-            logger.warn("Check-in and check-out dates cannot be null.");
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (!checkOutDate.isAfter(checkInDate)) {
-            logger.warn("Check-out date must be after check-in date.");
-            return ResponseEntity.badRequest().build();
-        }
-
-        logger.info("CHECK IN DATE: {}", checkInDate);
-
         List<Room> availableRooms = roomService.getAvailableRooms(checkInDate, checkOutDate, roomType);
         List<RoomResponse> roomResponses = new ArrayList<>();
 
@@ -149,13 +134,13 @@ public class RoomController {
 
     private RoomResponse getRoomResponse(Room room) {
         List<BookedRoom> bookings = getAllBookingsByRoomId(room.getId());
-//        List<BookingResponse> bookingInfo = bookings
-//                .stream()
-//                .map(booking -> new BookingResponse(
-//                        booking.getBookingId(),
-//                        booking.getCheckInDate(),
-//                        booking.getCheckOutDate(),
-//                        booking.getBookingConfirmationCode())).toList();
+        List<BookingResponse> bookingInfo = bookings
+                .stream()
+                .map(booking -> new BookingResponse(
+                        booking.getBookingId(),
+                        booking.getCheckInDate(),
+                        booking.getCheckOutDate(),
+                        booking.getBookingConfirmationCode())).toList();
         byte[] photoBytes = null;
         Blob photoBlob = room.getPhoto();
         if (photoBlob != null) {
@@ -163,7 +148,7 @@ public class RoomController {
                 photoBytes = photoBlob.getBytes(1, (int) photoBlob.length());
 
             }catch (SQLException e) {
-                throw new PhotoRetreiverException("Error retrieving photo");
+                throw new PhotoRetreivalException("Error retrieving photo");
             }
         }
         return new RoomResponse(
@@ -171,7 +156,7 @@ public class RoomController {
                 room.getRoomType(),
                 room.getRoomPrice(),
                 room.isBooked(),
-                photoBytes);
+                photoBytes, bookingInfo);
     }
 
     private List<BookedRoom> getAllBookingsByRoomId(Long roomId) {

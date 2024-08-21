@@ -3,25 +3,20 @@ import { getRoomById, updateRoom } from "../utils/ApiFunctions";
 import { Link, useParams } from "react-router-dom";
 
 const EditRoom = () => {
-  const [room, setRoom] = useState({
-    photo: "",
-    roomType: "",
-    roomPrice: "",
-  });
-  console.log(room);
+  const [room, setRoom] = useState({ photo: "", roomType: "", roomPrice: "" });
   const [imagePreview, setImagePreview] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
   const { roomId } = useParams();
 
-  const handleImageChange = (e) => {
+  const handleImageChange = e => {
     const selectedImage = e.target.files[0];
     setRoom({ ...room, photo: selectedImage });
-    console.log(room);
     setImagePreview(URL.createObjectURL(selectedImage));
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = event => {
     const { name, value } = event.target;
     setRoom({ ...room, [name]: value });
     console.log(room);
@@ -41,7 +36,7 @@ const EditRoom = () => {
     fetchRoom();
   }, [roomId]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     try {
@@ -56,7 +51,6 @@ const EditRoom = () => {
         setErrorMessage("Error updating room");
       }
     } catch (error) {
-      console.error(error);
       setErrorMessage(error.message);
     }
   };
@@ -126,10 +120,7 @@ const EditRoom = () => {
               )}
             </div>
             <div className="d-grid gap-2 d-md-flex mt-2">
-              <Link
-                to={"/existing-rooms"}
-                className="btn btn-outline-info ml-5"
-              >
+              <Link to={"/existing-rooms"} className="btn btn-outline-info ml-5">
                 back
               </Link>
               <button type="submit" className="btn btn-outline-warning">

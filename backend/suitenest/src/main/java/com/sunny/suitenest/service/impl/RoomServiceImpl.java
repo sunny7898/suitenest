@@ -23,6 +23,7 @@ import java.util.Optional;
 public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
+
     @Override
     public Room addNewRoom(MultipartFile file,
                            String roomType,
@@ -71,8 +72,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room updateRoom(Long roomId, String roomType, BigDecimal roomPrice, byte[] photoBytes) throws InternalServerException {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+        Room room = roomRepository.findById(roomId).get();
         if (roomType != null) room.setRoomType(roomType);
         if (roomPrice != null) room.setRoomPrice(roomPrice);
         if (photoBytes != null && photoBytes.length > 0) {

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { cancelBooking, getBookingByConfirmationCode } from "../utils/ApiFunctions";
 import moment from "moment";
+
+import { cancelBooking, getBookingByConfirmationCode } from "../utils/ApiFunctions";
 
 const FindBooking = () => {
   const [confirmationCode, setConfirmationCode] = useState("");
@@ -63,8 +64,8 @@ const FindBooking = () => {
     try {
       await cancelBooking(bookingInfo.id);
       setIsDeleted(true);
-      setBookingInfo(emptyBookingInfo);
       setSuccessMessage("Booking has been cancelled successfully!");
+      setBookingInfo(emptyBookingInfo);
       setConfirmationCode("");
       setError(null);
     } catch (err) {
@@ -108,7 +109,7 @@ const FindBooking = () => {
             <div className="col-md-6 mt-4 mb-5">
               <h3>Booking Information</h3>
               <p className="text-success">
-                Booking Confirmation Code: {bookingInfo.bookingConfirmationCode}{" "}
+                Booking Confirmation Code: {bookingInfo.bookingConfirmationCode}
               </p>
               <p>Booking ID: {bookingInfo.id} </p>
               <p>Room No.: {bookingInfo.room.id}</p>
@@ -119,7 +120,7 @@ const FindBooking = () => {
               </p>
               <p>
                 Check-out Date:
-                {" " + moment(bookingInfo.checkInDate).subtract(1, "month").format("MMM Do, YYYY")}
+                {" " + moment(bookingInfo.checkOutDate).subtract(1, "month").format("MMM Do, YYYY")}
               </p>
               <p>Full name: {bookingInfo.guestFullName}</p>
               <p>Email Address: {bookingInfo.guestEmail}</p>
@@ -128,7 +129,10 @@ const FindBooking = () => {
               <p>Total Guest: {bookingInfo.totalNumOfGuest}</p>
 
               {!isDeleted && (
-                <button className="btn btn-danger" onClick={handleBookingCancellation}>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleBookingCancellation(bookingInfo.id)}
+                >
                   Cancel Booking
                 </button>
               )}
