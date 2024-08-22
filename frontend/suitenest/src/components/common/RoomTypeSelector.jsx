@@ -27,7 +27,7 @@ const RoomTypeSelector = ({ handleRoomInputChange, newRoom }) => {
 
   return (
     <>
-      {roomTypes.length > 0 && (
+      {roomTypes.length >= 0 && (
         <div>
           <select
             required
