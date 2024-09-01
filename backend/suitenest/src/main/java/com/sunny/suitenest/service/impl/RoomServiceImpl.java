@@ -6,7 +6,10 @@ import com.sunny.suitenest.model.Room;
 import com.sunny.suitenest.repository.RoomRepository;
 import com.sunny.suitenest.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -20,21 +23,28 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class RoomServiceImpl implements RoomService {
+
+    private static final Logger logger = LoggerFactory.getLogger(RoomServiceImpl.class);
 
     private final RoomRepository roomRepository;
 
     @Override
-    public Room addNewRoom(MultipartFile file,
-                           String roomType,
-                           BigDecimal roomPrice) throws IOException, SQLException {
+    public Room addNewRoom(MultipartFile file, String roomType, BigDecimal roomPrice) throws IOException, SQLException {
         Room room = new Room();
         room.setRoomType(roomType);
         room.setRoomPrice(roomPrice);
-        if (!file.isEmpty()) {
-            byte[] photoBytes = file.getBytes();
-            Blob photoBlob = new SerialBlob(photoBytes);
-            room.setPhoto(photoBlob);
+        if (file != null && !file.isEmpty()) {
+            try {
+                byte[] photoBytes = file.getBytes();
+                Blob photoBlob = new SerialBlob(photoBytes);
+                room.setPhoto(photoBlob);
+            } catch (SQLException e) {
+                throw new SQLException("Error creating Blob from photo bytes: ", e);
+            }
+        } else {
+            throw new IOException("Photo file is empty or not provided.");
         }
         return roomRepository.save(room);
     }
@@ -56,10 +66,28 @@ public class RoomServiceImpl implements RoomService {
             throw new ResourceNotFoundException("Sorry! Room not found.");
         }
         Blob photoBlob = room.get().getPhoto();
-        if (photoBlob != null) {
-            return photoBlob.getBytes(1, (int) photoBlob.length());
+        if (photoBlob == null) {
+            logger.warn("No photo found for roomId: {}", roomId);
+            return null;
         }
-        return null;
+
+        try {
+            long length = photoBlob.length();
+            logger.debug("Blob length for roomId {}: {}", roomId, length);
+
+            if (length > Integer.MAX_VALUE) {
+                logger.error("Blob size is too large for roomId: {}", roomId);
+                throw new SQLException("Blob size exceeds maximum allowed length");
+            }
+
+            byte[] photoBytes = photoBlob.getBytes(1, (int) length);
+            logger.debug("Successfully fetched photo for roomId: {}", roomId);
+            return photoBytes;
+        } catch (SQLException e) {
+            logger.error("Error retrieving bytes from Blob for roomId: {}", roomId, e);
+            throw e; // Re-throw to handle at higher level if needed
+        }
+        //return photoBlob.getBytes(1, (int) photoBlob.length());
     }
 
     @Override

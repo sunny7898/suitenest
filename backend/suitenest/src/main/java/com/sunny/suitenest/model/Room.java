@@ -20,12 +20,12 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String roomType;
     private BigDecimal roomPrice;
     private boolean isBooked = false;
 
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     private Blob photo;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
