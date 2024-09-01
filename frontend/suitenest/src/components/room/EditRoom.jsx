@@ -10,10 +10,22 @@ const EditRoom = () => {
 
   const { roomId } = useParams();
 
-  const handleImageChange = e => {
+  const handleImageChange = async e => {
     const selectedImage = e.target.files[0];
     setRoom({ ...room, photo: selectedImage });
-    setImagePreview(URL.createObjectURL(selectedImage));
+
+    // Convert the image to base64
+    const base64String = await convertToBase64(selectedImage);
+    setImagePreview(base64String);
+  };
+
+  const convertToBase64 = file => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = error => reject(error);
+    });
   };
 
   const handleInputChange = event => {
@@ -28,7 +40,6 @@ const EditRoom = () => {
         const roomData = await getRoomById(roomId);
         setRoom(roomData);
         setImagePreview(roomData.photo);
-        console.log("Image : in fetch: " + roomData.photo);
       } catch (error) {
         console.error(error);
       }
@@ -46,7 +57,6 @@ const EditRoom = () => {
         setSuccessMessage("Room updated successfully!");
         const updatedRoomData = await getRoomById(roomId);
         setRoom(updatedRoomData);
-        console.log("Image : after update is done: " + updatedRoomData.photo);
         setImagePreview(updatedRoomData.photo);
         setErrorMessage("");
       } else {
@@ -105,7 +115,6 @@ const EditRoom = () => {
                 Photo
               </label>
               <input
-                required
                 id="photo"
                 name="photo"
                 type="file"

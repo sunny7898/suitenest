@@ -8,9 +8,13 @@ const RoomTypeSelector = ({ handleRoomInputChange, newRoom }) => {
   const [newRoomType, setNewRoomType] = useState("");
 
   useEffect(() => {
-    getRoomTypes().then(data => {
+    // Fetch room types when the component mounts
+    const fetchRoomTypes = async () => {
+      const data = await getRoomTypes();
       setRoomTypes(data);
-    });
+    };
+
+    fetchRoomTypes();
   }, []);
 
   const handleNewRoomTypeInputChange = e => {
@@ -18,66 +22,56 @@ const RoomTypeSelector = ({ handleRoomInputChange, newRoom }) => {
   };
 
   const handleAddNewRoomType = () => {
-    if (newRoomType !== "") {
-      setRoomTypes([...roomTypes, newRoomType]);
+    if (newRoomType.trim()) {
+      setRoomTypes(prevRoomTypes => [...prevRoomTypes, newRoomType.trim()]);
       setNewRoomType("");
       setShowNewRoomTypeInput(false);
+      handleRoomInputChange({ target: { name: "roomType", value: newRoomType.trim() } }); // Update parent state
     }
+  };
+  const handleSelectChange = e => {
+    const { value } = e.target;
+    if (value === "Add New") setShowNewRoomTypeInput(true);
+    else handleRoomInputChange(e);
   };
 
   return (
-    <>
-      {roomTypes.length >= 0 && (
-        <div>
-          <select
-            required
-            className="form-select"
-            name="roomType"
-            onChange={e => {
-              if (e.target.value === "Add New") {
-                setShowNewRoomTypeInput(true);
-              } else {
-                // Else prevents the adding of "Add New" as a roomtype by mistake
-                handleRoomInputChange(e);
-              }
-            }}
-            value={newRoom.roomType}
-          >
-            {roomTypes.length > 0 ? (
-              <option disabled selected value="">
-                -- Select a room type --
-              </option>
-            ) : (
-              <option disabled selected value="">
-                -- Select an option --
-              </option>
-            )}
-            <option value="Add New">Add new room type</option>
-            {roomTypes.map((type, index) => (
-              <option key={index} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-          {showNewRoomTypeInput && (
-            <div className="mt-2">
-              <div className="input-group">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter New Room Type"
-                  value={newRoomType}
-                  onChange={handleNewRoomTypeInputChange}
-                />
-                <button className="btn btn-hotel" type="button" onClick={handleAddNewRoomType}>
-                  Add
-                </button>
-              </div>
-            </div>
-          )}
+    <div>
+      <select
+        required
+        className="form-select"
+        name="roomType"
+        onChange={handleSelectChange}
+        value={newRoom.roomType || ""}
+      >
+        <option value="" disabled>
+          {roomTypes.length > 0 ? "-- Select a room type --" : "-- Select an option --"}
+        </option>
+        <option value="Add New">Add new room type</option>
+        {roomTypes.map((type, index) => (
+          <option key={index} value={type}>
+            {type}
+          </option>
+        ))}
+      </select>
+
+      {showNewRoomTypeInput && (
+        <div className="mt-2">
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter New Room Type"
+              value={newRoomType}
+              onChange={handleNewRoomTypeInputChange}
+            />
+            <button className="btn btn-hotel" type="button" onClick={handleAddNewRoomType}>
+              Add
+            </button>
+          </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

@@ -18,6 +18,7 @@ const RoomSearch = () => {
 
   const handleSearch = e => {
     e.preventDefault();
+
     const checkIn = moment(searchQuery.checkInDate);
     const checkOut = moment(searchQuery.checkOutDate);
 
@@ -42,6 +43,8 @@ const RoomSearch = () => {
   };
 
   const handleInputChange = e => {
+    setErrorMessage("");
+
     const { name, value } = e.target;
     setSearchQuery({ ...searchQuery, [name]: value });
     const checkInDate = moment(searchQuery.checkInDate);
