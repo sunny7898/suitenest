@@ -18,8 +18,8 @@ const BookingForm = () => {
     guestEmail: currentUser,
     checkInDate: "",
     checkOutDate: "",
-    numOfAdults: "",
-    numOfChildren: "",
+    numOfAdults: 1,
+    numOfChildren: 0,
   });
 
   const { roomId } = useParams();
@@ -174,7 +174,9 @@ const BookingForm = () => {
                         value={booking.checkOutDate}
                         placeholder="check-out-date"
                         min={
-                          booking.checkInDate ? booking.checkInDate : moment().format("YYYY-MM-DD")
+                          booking.checkInDate === ""
+                            ? booking.checkInDate
+                            : moment().format("YYYY-MM-DD")
                         }
                         onChange={handleInputChange}
                       />
@@ -200,6 +202,7 @@ const BookingForm = () => {
                         id="numOfAdults"
                         name="numOfAdults"
                         min={1}
+                        max={3}
                         placeholder="0"
                         value={booking.numOfAdults}
                         onChange={handleInputChange}
@@ -220,6 +223,7 @@ const BookingForm = () => {
                         name="numOfChildren"
                         placeholder="0"
                         min={0}
+                        max={2}
                         value={booking.numOfChildren}
                         onChange={handleInputChange}
                       />
