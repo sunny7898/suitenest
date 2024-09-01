@@ -57,12 +57,15 @@ const BookingForm = () => {
 
   const maxDaysBookingAllowed = 14;
   const isCheckOutDateValid = () => {
+    // Only run validation if both dates are present
+    if (!booking.checkInDate || !booking.checkOutDate) {
+      return;
+    }
+
     const checkInDate = moment(booking.checkInDate);
     const checkOutDate = moment(booking.checkOutDate);
 
-    console.log(`Checkout date: ${checkOutDate}`);
-
-    if (checkOutDate !== "" && !checkOutDate.isSameOrAfter(checkInDate)) {
+    if (!checkOutDate.isSameOrAfter(checkInDate)) {
       setErrorMessage("Check-out date must be after check-in date");
       return false;
     }
