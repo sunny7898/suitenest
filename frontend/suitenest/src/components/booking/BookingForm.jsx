@@ -55,15 +55,33 @@ const BookingForm = () => {
     return totalCount >= 1 && adultCount >= 1;
   };
 
+  const maxDaysBookingAllowed = 14;
   const isCheckOutDateValid = () => {
-    if (!moment(booking.checkOutDate).isSameOrAfter(moment(booking.checkInDate))) {
+    const checkInDate = moment(booking.checkInDate);
+    const checkOutDate = moment(booking.checkOutDate);
+
+    if (!checkOutDate.isSameOrAfter(checkInDate)) {
       setErrorMessage("Check-out date must be after check-in date");
       return false;
-    } else {
-      setErrorMessage("");
-      return true;
     }
+
+    const diffInDays = checkOutDate.diff(checkInDate, "days");
+    if (diffInDays > maxDaysBookingAllowed) {
+      setErrorMessage(
+        "Max Days to allow booking has exceeded. You can only book the room for a maximum of 14 days"
+      );
+      return false;
+    }
+
+    setErrorMessage("");
+    return true;
   };
+
+  useEffect(() => {
+    if (booking.checkInDate || booking.checkOutDate) {
+      isCheckOutDateValid();
+    }
+  }, [booking.checkInDate, booking.checkOutDate]);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -86,6 +104,12 @@ const BookingForm = () => {
       console.log(errorMessage);
       navigate("/booking-success", { state: { error: errorMessage } });
     }
+  };
+
+  const getMinCheckOutDate = () => {
+    return booking.checkInDate
+      ? moment(booking.checkInDate).format("YYYY-MM-DD")
+      : moment().format("YYYY-MM-DD");
   };
 
   useEffect(() => {
@@ -172,9 +196,7 @@ const BookingForm = () => {
                         name="checkOutDate"
                         value={booking.checkOutDate}
                         min={
-                          booking.checkInDate == ""
-                            ? booking.checkInDate
-                            : moment().format("YYYY-MM-DD")
+                          booking.checkInDate ? booking.checkInDate : moment().format("YYYY-MM-DD")
                         }
                         onChange={handleInputChange}
                       />
