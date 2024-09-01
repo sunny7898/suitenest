@@ -100,17 +100,13 @@ const BookingForm = () => {
     }
   };
 
-  const getMinCheckOutDate = () => {
-    return booking.checkInDate
-      ? moment(booking.checkInDate).format("YYYY-MM-DD")
-      : moment().format("YYYY-MM-DD");
-  };
-
   useEffect(() => {
     getRoomPriceById(roomId);
   }, [roomId]);
 
   useEffect(() => {
+    console.log(`Checkout date: ${booking.checkOutDate}`);
+
     if (booking.checkInDate || booking.checkOutDate) {
       isCheckOutDateValid();
     }
