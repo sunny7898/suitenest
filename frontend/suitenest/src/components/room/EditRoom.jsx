@@ -12,8 +12,10 @@ const EditRoom = () => {
 
   const handleImageChange = e => {
     const selectedImage = e.target.files[0];
-    setRoom({ ...room, photo: selectedImage });
-    setImagePreview(URL.createObjectURL(selectedImage));
+    if (selectedImage) {
+      setRoom({ ...room, photo: selectedImage });
+      setImagePreview(URL.createObjectURL(selectedImage));
+    }
   };
 
   const handleInputChange = event => {
@@ -39,8 +41,14 @@ const EditRoom = () => {
   const handleSubmit = async e => {
     e.preventDefault();
 
+    // Create FormData to handle file upload
+    const formData = new FormData();
+    formData.append("photo", room.photo);
+    formData.append("roomType", room.roomType);
+    formData.append("roomPrice", room.roomPrice);
+
     try {
-      const response = await updateRoom(roomId, room);
+      const response = await updateRoom(roomId, formData);
       if (response.status === 200) {
         setSuccessMessage("Room updated successfully!");
         const updatedRoomData = await getRoomById(roomId);
@@ -112,7 +120,7 @@ const EditRoom = () => {
               />
               {imagePreview && (
                 <img
-                  src={`data:image/jpeg;base64,${imagePreview}`}
+                  src={imagePreview}
                   alt="Room preview"
                   style={{ maxWidth: "400px", maxHeight: "400" }}
                   className="mt-3"
