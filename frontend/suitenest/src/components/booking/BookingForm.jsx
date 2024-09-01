@@ -60,6 +60,8 @@ const BookingForm = () => {
     const checkInDate = moment(booking.checkInDate);
     const checkOutDate = moment(booking.checkOutDate);
 
+    console.log(`Checkout date: ${checkOutDate}`);
+
     if (checkOutDate !== "" && !checkOutDate.isSameOrAfter(checkInDate)) {
       setErrorMessage("Check-out date must be after check-in date");
       return false;
@@ -105,8 +107,6 @@ const BookingForm = () => {
   }, [roomId]);
 
   useEffect(() => {
-    console.log(`Checkout date: ${booking.checkOutDate}`);
-
     if (booking.checkInDate || booking.checkOutDate) {
       isCheckOutDateValid();
     }
