@@ -28,7 +28,7 @@ const Registration = () => {
 
       // Delay navigation to login page only if registration is successful
       setTimeout(() => {
-        if (response) {
+        if (successMessage) {
           navigate("/login");
         }
       }, 2000); // Adjust the delay as needed (e.g., 2000ms for 2 seconds)
