@@ -8,7 +8,6 @@ const Logout = () => {
 
   const handleLogout = () => {
     auth.handleLogout();
-    window.location.reload();
     navigate("/", { state: { message: "You have been logged out!" } });
   };
 
