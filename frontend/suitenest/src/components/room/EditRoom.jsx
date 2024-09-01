@@ -12,10 +12,8 @@ const EditRoom = () => {
 
   const handleImageChange = e => {
     const selectedImage = e.target.files[0];
-    if (selectedImage) {
-      setRoom({ ...room, photo: selectedImage });
-      setImagePreview(URL.createObjectURL(selectedImage));
-    }
+    setRoom({ ...newRoom, photo: selectedImage });
+    setImagePreview(URL.createObjectURL(selectedImage));
   };
 
   const handleInputChange = event => {
@@ -41,14 +39,8 @@ const EditRoom = () => {
   const handleSubmit = async e => {
     e.preventDefault();
 
-    // Create FormData to handle file upload
-    const formData = new FormData();
-    formData.append("photo", room.photo);
-    formData.append("roomType", room.roomType);
-    formData.append("roomPrice", room.roomPrice);
-
     try {
-      const response = await updateRoom(roomId, formData);
+      const response = await updateRoom(roomId, room);
       if (response.status === 200) {
         setSuccessMessage("Room updated successfully!");
         const updatedRoomData = await getRoomById(roomId);
@@ -112,20 +104,20 @@ const EditRoom = () => {
               </label>
               <input
                 required
-                type="file"
-                className="form-control"
                 id="photo"
                 name="photo"
+                type="file"
+                className="form-control"
                 onChange={handleImageChange}
               />
-              {imagePreview && (
+              {imagePreview ? (
                 <img
                   src={imagePreview}
                   alt="Room preview"
                   style={{ maxWidth: "400px", maxHeight: "400" }}
                   className="mt-3"
                 />
-              )}
+              ) : null}
             </div>
             <div className="d-grid gap-2 d-md-flex mt-2">
               <Link to={"/existing-rooms"} className="btn btn-outline-info ml-5">
