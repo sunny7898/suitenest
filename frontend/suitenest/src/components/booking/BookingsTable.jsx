@@ -20,6 +20,7 @@ const BookingsTable = ({ bookingsInfo, handleBookingCancellation }) => {
   };
 
   useEffect(() => {
+    console.log(bookingsInfo.checkInDate);
     setFilteredBookings(bookingsInfo);
   }, [bookingsInfo]);
 
