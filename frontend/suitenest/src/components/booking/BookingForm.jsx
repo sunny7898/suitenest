@@ -153,7 +153,6 @@ const BookingForm = () => {
                         id="checkInDate"
                         name="checkInDate"
                         value={booking.checkInDate}
-                        placeholder="check-in-date"
                         min={moment().format("YYYY-MM-DD")}
                         onChange={handleInputChange}
                       />
@@ -172,9 +171,8 @@ const BookingForm = () => {
                         id="checkOutDate"
                         name="checkOutDate"
                         value={booking.checkOutDate}
-                        placeholder="check-out-date"
                         min={
-                          booking.checkInDate === ""
+                          booking.checkInDate == ""
                             ? booking.checkInDate
                             : moment().format("YYYY-MM-DD")
                         }
