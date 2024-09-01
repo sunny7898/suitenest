@@ -118,10 +118,12 @@ const RoomSearch = () => {
         ) : availableRooms ? (
           <RoomSearchResult results={availableRooms} onClearSearch={handleClearSearch} />
         ) : (
-          <p className="mt-4">No Rooms Available for the selected room type in the date range</p>
+          <p className="mt-4 alert alert-danger">
+            No Rooms Available for the selected room type in the date range
+          </p>
         )}
 
-        {errorMessage && <p className="text-danger">{errorMessage}</p>}
+        {errorMessage && <p className="alert alert-danger">{errorMessage}</p>}
       </Container>
     </>
   );
