@@ -8,7 +8,8 @@ export const getHeader = () => {
   const token = localStorage.getItem("token");
   return {
     Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
+    // Don't put the content type manually. Axios takes care of it on its own
+    // "Content-Type": "application/json",
     // "Content-Type": "multipart/form-data",
   };
 };
@@ -20,8 +21,15 @@ export async function addRoom(photo, roomType, roomPrice) {
   formData.append("roomType", roomType);
   formData.append("roomPrice", roomPrice);
 
+  // Debug: Log FormData content
+  // for (let [key, value] of formData.entries()) {
+  //   console.log(`${key}:`, value);
+  // }
+
   const response = await api.post("/rooms/add/new-room", formData, {
-    headers: getHeader(),
+    headers: {
+      ...getHeader(), // Include other necessary headers, but do not manually set Content-Type
+    },
   });
 
   if (response.status === 201) {
@@ -43,7 +51,9 @@ export async function getRoomTypes() {
 /* This function gets all rooms from the database */
 export async function getAllRooms() {
   try {
-    const response = await api.get("/rooms/all-rooms");
+    const response = await api.get("/rooms/all-rooms", {
+      headers: getHeader(), // Include other necessary headers, but do not manually set Content-Type
+    });
     return response.data;
   } catch (err) {
     throw new Error("Error fetching rooms. Error: " + err.message);
