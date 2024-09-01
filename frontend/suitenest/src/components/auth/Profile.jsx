@@ -138,7 +138,7 @@ const Profile = () => {
                           <ul className="list-unstyled">
                             {user.roles.map(role => (
                               <li key={role.id} className="card-text">
-                                {role.name == ROLE_ADMIN ? "ADMIN" : "USER"}
+                                {role.name}
                               </li>
                             ))}
                           </ul>
