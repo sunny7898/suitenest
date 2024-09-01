@@ -112,7 +112,7 @@ const EditRoom = () => {
               />
               {imagePreview ? (
                 <img
-                  src={imagePreview}
+                  src={`data:image/png;base64, ${imagePreview}`}
                   alt="Room preview"
                   style={{ maxWidth: "400px", maxHeight: "400" }}
                   className="mt-3"
