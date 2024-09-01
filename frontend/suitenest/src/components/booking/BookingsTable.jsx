@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { parseISO } from "date-fns";
+import { parseISO, format } from "date-fns";
 import DateSlider from "../common/DateSlider";
 
 const BookingsTable = ({ bookingsInfo, handleBookingCancellation }) => {
