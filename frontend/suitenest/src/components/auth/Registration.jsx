@@ -22,16 +22,9 @@ const Registration = () => {
     e.preventDefault();
     try {
       const response = await registerUser(registration);
-      setSuccessMessage(response);
+      setSuccessMessage(response + " Please click on Login ");
       setErrorMessage("");
       setRegistration({ firstName: "", lastName: "", email: "", password: "" });
-
-      // Delay navigation to login page only if registration is successful
-      setTimeout(() => {
-        if (successMessage) {
-          navigate("/login");
-        }
-      }, 2000); // Adjust the delay as needed (e.g., 2000ms for 2 seconds)
     } catch (err) {
       setSuccessMessage("");
       setErrorMessage(`Error registering user: ${err.message}`);
