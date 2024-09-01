@@ -60,7 +60,7 @@ const BookingForm = () => {
     const checkInDate = moment(booking.checkInDate);
     const checkOutDate = moment(booking.checkOutDate);
 
-    if (!checkOutDate.isSameOrAfter(checkInDate)) {
+    if (checkOutDate !== "" && !checkOutDate.isSameOrAfter(checkInDate)) {
       setErrorMessage("Check-out date must be after check-in date");
       return false;
     }
@@ -76,12 +76,6 @@ const BookingForm = () => {
     setErrorMessage("");
     return true;
   };
-
-  useEffect(() => {
-    if (booking.checkInDate || booking.checkOutDate) {
-      isCheckOutDateValid();
-    }
-  }, [booking.checkInDate, booking.checkOutDate]);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -115,6 +109,12 @@ const BookingForm = () => {
   useEffect(() => {
     getRoomPriceById(roomId);
   }, [roomId]);
+
+  useEffect(() => {
+    if (booking.checkInDate || booking.checkOutDate) {
+      isCheckOutDateValid();
+    }
+  }, [booking.checkInDate, booking.checkOutDate]);
 
   return (
     <>
