@@ -9,7 +9,6 @@ const EditRoom = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const { roomId } = useParams();
-  const roomFromState = location.state?.room;
 
   const handleImageChange = e => {
     const selectedImage = e.target.files[0];
@@ -24,21 +23,17 @@ const EditRoom = () => {
   };
 
   useEffect(() => {
-    if (roomFromState) {
-      setRoom(roomFromState);
-      setImagePreview(roomFromState.photo);
-    } else {
-      const fetchRoom = async () => {
-        try {
-          const roomData = await getRoomById(roomId);
-          setRoom(roomData);
-          setImagePreview(roomData.photo);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      fetchRoom();
-    }
+    const fetchRoom = async () => {
+      try {
+        const roomData = await getRoomById(roomId);
+        setRoom(roomData);
+        setImagePreview(roomData.photo);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchRoom();
   }, [roomId]);
 
   const handleSubmit = async e => {
