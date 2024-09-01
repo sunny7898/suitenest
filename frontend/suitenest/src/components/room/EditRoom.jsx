@@ -28,6 +28,7 @@ const EditRoom = () => {
         const roomData = await getRoomById(roomId);
         setRoom(roomData);
         setImagePreview(roomData.photo);
+        console.log("Image : in fetch: " + roomData.photo);
       } catch (error) {
         console.error(error);
       }
@@ -45,6 +46,7 @@ const EditRoom = () => {
         setSuccessMessage("Room updated successfully!");
         const updatedRoomData = await getRoomById(roomId);
         setRoom(updatedRoomData);
+        console.log("Image : after update is done: " + updatedRoomData.photo);
         setImagePreview(updatedRoomData.photo);
         setErrorMessage("");
       } else {
