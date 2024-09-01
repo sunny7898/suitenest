@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { registerUser } from "../utils/ApiFunctions";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Registration = () => {
   const [registration, setRegistration] = useState({
@@ -12,6 +12,8 @@ const Registration = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  const navigate = useNavigate();
+
   const handleInputChange = e => {
     setRegistration({ ...registration, [e.target.name]: e.target.value });
   };
@@ -22,8 +24,8 @@ const Registration = () => {
       const response = await registerUser(registration);
       setSuccessMessage(response);
       setErrorMessage("");
-
       setRegistration({ firstName: "", lastName: "", email: "", password: "" });
+      navigate("/login");
     } catch (err) {
       setSuccessMessage("");
       setErrorMessage(`Error registering user: ${err.message}`);
